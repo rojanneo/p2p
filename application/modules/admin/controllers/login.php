@@ -32,8 +32,8 @@ public function index()
 
 public function loginPost()
 {
-	$username = $_POST['username'];
-	$password = $_POST['password'];
+	$username = $this->input->post('username');
+	$password = $this->input->post('username');
 	if(is_null($username) or is_null($password))
 	{
 		$this->session->set_flashdata('login_failed', true);

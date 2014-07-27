@@ -20,7 +20,7 @@ class Api_model extends CI_Model {
     function checkApi($apiKey, $apiPassword) {
         $salt = 'frenzApiForP2P';
         $password = sha1($salt . $apiPassword . $salt);
-        return $this->db->get_where('apiconfig', array('identificationNumber' => $apiKey, 'password' => $password))->num_rows();
+        return $this->db->get_where('ad_api_info', array('api_key' => $apiKey, 'api_password' => $password))->num_rows();
     }
 
     function createUser($email, $password, $salt, $activationCode) {

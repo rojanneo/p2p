@@ -15,13 +15,14 @@ class Dashboard extends CI_Controller
 	
 	public function index()
 	{
-		echo 'Dashboard';
-		echo '<a href="'.config_item("base_url")."admin/dashboard/logout".'">Logout</a>';
+		$this->load->view('header');
+		$this->load->view('menu');
+		$this->load->view('footer');
 	}
 	
 	public function logout()
 	{
-		$array_items = array('username' => '', 'logged_in' => '');
+		$array_items = array('username' => '', 'logged_in' => '', 'role'=>'');
 		$this->session->unset_userdata($array_items);
 		redirect(config_item('base_url').'admin/login');
 	}

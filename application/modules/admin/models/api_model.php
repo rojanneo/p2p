@@ -54,5 +54,20 @@ class Api_model extends CI_Model {
                         ->join('brand','brand.brand_id = tone_ref.brand_id','INNER')
                         ->get('ringtone')->result();
     }
+	
+	function save($api_key, $encryptedPass, $salt, $version)
+	{
+		$data = array('api_key'=>$api_key, 'api_password'=>$encryptedPass, 'api_salt'=>$salt, 'versionName'=>$version);
+		//var_dump($data);die;
+		$this->db->insert('ad_api_info',$data);
+		
+
+	}
+	
+	function getApiList()
+	{
+		$query = $this->db->get('ad_api_info');
+		return $query->result_array();
+	}
 
 }

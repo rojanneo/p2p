@@ -33,17 +33,19 @@ public function index()
 public function loginPost()
 {
 	$username = $this->input->post('username');
-	$password = $this->input->post('username');
+	$password = $this->input->post('password');
 	if(is_null($username) or is_null($password))
 	{
 		$this->session->set_flashdata('login_failed', true);
 		redirect(config_item('base_url').'admin/login');
 	}
-	if(($this->login_model->aunthenticate($username, $password)))
+	$role = ($this->login_model->aunthenticate($username, $password));
+	if($role)
 	{
 		$session_data = array(
                    'username'  => $username,
-                   'logged_in' => TRUE
+                   'logged_in' => TRUE,
+				   'role' => $role[0]['admin_role']
 				   );
 		$this->session->set_userdata($session_data);
 		redirect(config_item('base_url').'admin/dashboard');

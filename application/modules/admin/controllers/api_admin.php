@@ -13,7 +13,6 @@ class Api extends CI_Controller {
         $this->load->model('api_model');
 		$this->load->library('session');
 		$this->load->helper('url');
-		$this->load->helper('form');
     }
 
     public function index() {
@@ -29,44 +28,25 @@ class Api extends CI_Controller {
 				redirect(config_item('base_url').'admin/dashboard');
 			}
 		}
-		$apis = $this->api_model->getApiList();
-		$data['apis'] = $apis;
+		
 		$this->load->view('header');
 		$this->load->view('menu');
-		$this->load->view('api_list', $data);
+		$this->load->view('add_api_key');
 		$this->load->view('footer');
     }
 	
 	public function add()
-	{
-		if(!$this->session->userdata('logged_in'))
-			{
-				redirect(config_item('base_url').'admin/login');
-			}
-			else
-			{
-				if($this->session->userdata('role') == 'staff')
-				{
-					redirect(config_item('base_url').'admin/dashboard');
-				}
-			}
-			
-			$this->load->view('header');
-			$this->load->view('menu');
-			$this->load->view('add_api_key');
-			$this->load->view('footer');
-	}
-	
-	public function addPost()
-	{
+	{var_dump($_POST);die;
 		$this->load->library('encrypt');
+		var_dump($_POST);die;
 		$api_key = $this->input->post('api_key');
+		echo $api_key;die;
 		$api_pass = $this->input->post('api_pass');
-		$salt = $this->getSalt(4);
+		$salt = $this->salt(4);
 		$version = $this->input->post('api_version');
 		$encryptedPass = $this->encrypt->sha1($salt.$api_pass.$salt);
+		
 		$this->api_model->save($api_key, $encryptedPass, $salt, $version);
-		redirect(config_item('base_url').'admin/api/');
 	}
 
     public function code($id) {
@@ -170,15 +150,7 @@ class Api extends CI_Controller {
         endfor;
         echo $randomString;
     }
-	function getSalt($length = 32)
-	{
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()/-+';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++):
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        endfor;
-        return $randomString;
-	}
+
     function activationCode($length) {
         $characters = '0123456789';
         $randomString = '';

@@ -14,21 +14,19 @@ class Api extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->helper('form');
+		$this->load->helper('admin');
+		$role = $this->session->userdata('role');
+		$rating = getRoleRating($role);
+		//echo $rating;
+		if($rating < 1)
+		{
+			redirect(config_item('base_url').'admin/dashboard');
+		}
     }
 
     public function index() {
         //echo 'RCPG API';
-		if(!$this->session->userdata('logged_in'))
-		{
-			redirect(config_item('base_url').'admin/login');
-		}
-		else
-		{
-			if($this->session->userdata('role') == 'staff')
-			{
-				redirect(config_item('base_url').'admin/dashboard');
-			}
-		}
+		
 		$apis = $this->api_model->getApiList();
 		$data['apis'] = $apis;
 		$this->load->view('header');
@@ -39,18 +37,7 @@ class Api extends CI_Controller {
 	
 	public function add()
 	{
-		if(!$this->session->userdata('logged_in'))
-			{
-				redirect(config_item('base_url').'admin/login');
-			}
-			else
-			{
-				if($this->session->userdata('role') == 'staff')
-				{
-					redirect(config_item('base_url').'admin/dashboard');
-				}
-			}
-			
+		
 			$this->load->view('header');
 			$this->load->view('menu');
 			$this->load->view('add_api_key');
@@ -67,6 +54,47 @@ class Api extends CI_Controller {
 		$encryptedPass = $this->encrypt->sha1($salt.$api_pass.$salt);
 		$this->api_model->save($api_key, $encryptedPass, $salt, $version);
 		redirect(config_item('base_url').'admin/api/');
+	}
+	
+	public function edit($api_id)
+	{
+		
+			
+			$api = $this->api_model->getApiData($api_id);
+			$data['api'] = $api[0];
+			$this->load->view('header');
+			$this->load->view('menu');
+			$this->load->view('add_api_key',$data);
+			$this->load->view('footer');
+	}
+	
+	public function editPost()
+	{
+		$this->load->library('encrypt');
+		$api_id = $this->input->post('api_id');
+		$api_key = $this->input->post('api_key');
+		$api_pass = $this->input->post('api_pass');
+		$api_data = $this->api_model->getApiData($api_id);
+		if($api_pass)
+		{
+			$salt = $this->getSalt(4);
+			$encryptedPass = $this->encrypt->sha1($salt.$api_pass.$salt);
+		}
+		else
+		{
+			$salt = $api_data[0]['api_salt'];
+			$encryptedPass = $api_data[0]['api_password'];
+		}
+		$version = $this->input->post('api_version');
+		$this->api_model->updateApiData($api_id, $api_key, $encryptedPass, $salt, $version);
+		redirect(config_item('base_url').'admin/api');
+		//Update Code Here
+	}
+	
+	public function delete($api_id)
+	{
+		$this->api_model->deleteApi($api_id);
+		redirect(config_item('base_url').'admin/api');
 	}
 
     public function code($id) {

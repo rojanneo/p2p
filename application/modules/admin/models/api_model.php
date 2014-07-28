@@ -64,10 +64,29 @@ class Api_model extends CI_Model {
 
 	}
 	
+	function updateApiData($api_id,$api_key, $encryptedPass, $salt, $version)
+	{
+		$data = array('api_key' => $api_key, 'api_password'=>$encryptedPass, 'api_salt'=>$salt, 'versionName' => $version);
+		$this->db->where('id', $api_id);
+		$this->db->update('ad_api_info', $data); 
+	}
+	
 	function getApiList()
 	{
 		$query = $this->db->get('ad_api_info');
 		return $query->result_array();
 	}
+	
+	function getApiData($api_id)
+	{
+		$query = $this->db->get_where('ad_api_info', array('id'=>$api_id));
+		return $query->result_array();
+	}
+	
+	function deleteApi($api_id)
+	{
+		$this->db->delete('ad_api_info', array('id' => $api_id)); 
+	}
+	
 
 }

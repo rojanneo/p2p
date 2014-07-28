@@ -7,6 +7,7 @@ class Dashboard extends CI_Controller
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->helper('url');
+		$this->load->helper('admin');
 		if(!$this->session->userdata('logged_in'))
 		{
 			redirect(config_item('base_url').'admin/login');

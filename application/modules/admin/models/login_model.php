@@ -17,6 +17,7 @@ public function checkLogin()
 
 public function aunthenticate($username, $password)
 {
+
 	$encryptedPassword = $this->encrypt->sha1($password);
 	$query = $this->db->get_where('ad_admin_user', array('admin_username'=>$username, 'admin_password'=>$encryptedPassword));
 	return $query->result_array();

@@ -10,5 +10,5 @@ $rating = getRoleRating($role);
 <a href="<?php echo config_item('base_url').'admin/incentive/'?>">Incentive Methods</a>
 <?php endif;?>
 <a href="#">Ad Banners</a>
-<a href="#">Brands</a>
+<a href="<?php echo config_item('base_url').'admin/brands/'?>">Brands</a>
 <a href="#">Users</a>
